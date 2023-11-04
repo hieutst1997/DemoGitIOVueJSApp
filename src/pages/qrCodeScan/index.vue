@@ -1,9 +1,12 @@
 <template>
 	<div>
-		<QrcodeStream @decode="onDecode" :worker="worker"></QrcodeStream>
-		<div v-if="scannedData">Scanned QR Code: {{ scannedData }}</div>
+		<StreamBarcodeReader
+			@decode="onDecode"
+			@loaded="onLoaded"
+		></StreamBarcodeReader>
+		<div>Scanned QR Code: {{ scannedData }}</div>
 
-        demk
+		demk
 	</div>
 </template>
 
@@ -11,29 +14,30 @@
 
 <script>
 import { defineComponent, ref } from "vue";
-import { QrcodeStream, QrcodeDropZone, QrcodeCapture } from 'vue-qrcode-reader'
+import { StreamBarcodeReader } from "vue-barcode-reader";
 
 
 export default defineComponent({
 	name: "QrCodeScan",
 	components: {
-		QrcodeStream,
-        QrcodeDropZone,
-        QrcodeCapture
+		StreamBarcodeReader,
 	},
 	setup() {
 		const scannedData = ref(null);
 		const worker = null;
 
-		const onDecode = (result) => {
-			if (result) {
-				scannedData.value = result;
-			}
-		};
+		fucntion onDecode(text) {
+        	console.log(`Decode text from QR code is ${text}`)
+			scannedData.value = text;
+		},
+
+		fucntion onLoaded() {
+			console.log(`Ready to start scanning barcodes`)
+		}
 		return {
 			onDecode,
-            scannedData,
-            worker
+            onLoaded,
+			scannedData
 		};
 	},
 });
